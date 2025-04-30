@@ -23,8 +23,11 @@ SELECT cron.schedule(
     '0 18 * * *', -- Cron schedule (6 PM UTC) - ADJUST TIMEZONE IF NEEDED
     $$
     SELECT net.http_post(
-        url:='https://ohsdrukqwxwbovvkvnfr.supabase.co/send-daily-report', -- Replace with your actual function URL
-        headers:='{"Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oc2RydWtxd3h3Ym92dmt2bmZyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTUxODM3NiwiZXhwIjoyMDYxMDk0Mzc2fQ.sxQLLRGa8CbLBSDWBhEpHYfKMieh_mCzKcXMGfuTcpo"}'::jsonb,
+        url:='https://ohsdrukqwxwbovvkvnfr.supabase.co/send-daily-report', 
+        headers:=jsonb_build_object(
+            'Content-Type', 'application/json',
+            'Authorization', concat('Bearer ', current_setting('app.supabase_service_key', true))
+        )::jsonb,
         body:='{}'::jsonb -- Body can be empty unless your function expects something
     );
     $$
